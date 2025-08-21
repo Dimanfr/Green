@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Digital-KI — Erinnerungsservice für Sanitätshäuser</title>
+    <meta name="description" content="Digital-KI: Digitaler Erinnerungsservice für Sanitätshäuser. Weniger Ausfälle durch Vergessen, mehr Wiederkehr, mehr Umsatz — vollautomatisch und DSGVO-konform." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+            colors: {
+              dk: {
+                bg: '#0B1220',
+                card: '#0F172A',
+                brand: '#16A34A',
+                brandAlt: '#22C55E',
+                text: '#E5E7EB',
+                muted: '#94A3B8'
+              }
+            },
+            boxShadow: {
+              soft: '0 10px 30px rgba(0,0,0,0.25)'
+            },
+            animation: {
+              'fade-in-up': 'fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+              'fade-in-left': 'fadeInLeft 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+              'fade-in-right': 'fadeInRight 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+              'scale-in': 'scaleIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+              'slide-in-up': 'slideInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+            },
+            keyframes: {
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(30px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
+              },
+              fadeInLeft: {
+                '0%': { opacity: '0', transform: 'translateX(-30px)' },
+                '100%': { opacity: '1', transform: 'translateX(0)' }
+              },
+              fadeInRight: {
+                '0%': { opacity: '0', transform: 'translateX(30px)' },
+                '100%': { opacity: '1', transform: 'translateX(0)' }
+              },
+              scaleIn: {
+                '0%': { opacity: '0', transform: 'scale(0.8)' },
+                '100%': { opacity: '1', transform: 'scale(1)' }
+              },
+              slideInUp: {
+                '0%': { opacity: '0', transform: 'translateY(50px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html { scroll-behavior:smooth; }
+      .container-xl { max-width: 1120px; }
+      
+      /* Background dots pattern */
+      .bg-dots {
+        background-image: radial-gradient(circle, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+      }
+      
+      /* Animation delays for staggered effects */
+      .animate-delay-100 { animation-delay: 0.1s; }
+      .animate-delay-200 { animation-delay: 0.2s; }
+      .animate-delay-300 { animation-delay: 0.3s; }
+      .animate-delay-400 { animation-delay: 0.4s; }
+      .animate-delay-500 { animation-delay: 0.5s; }
+      .animate-delay-600 { animation-delay: 0.6s; }
+      .animate-delay-700 { animation-delay: 0.7s; }
+      .animate-delay-800 { animation-delay: 0.8s; }
+      
+      /* Initial state for animations */
+      .animate-on-load {
+        opacity: 0 !important;
+        animation-play-state: paused;
+        animation-fill-mode: both;
+        transition: none !important;
+      }
+      
+      /* Animation states */
+      .animate-on-load.animate-fade-in-up {
+        transform: translateY(40px) scale(0.95);
+      }
+      
+      .animate-on-load.animate-fade-in-left {
+        transform: translateX(-40px) scale(0.95);
+      }
+      
+      .animate-on-load.animate-fade-in-right {
+        transform: translateX(40px) scale(0.95);
+      }
+      
+      .animate-on-load.animate-scale-in {
+        transform: scale(0.7) rotate(-2deg);
+      }
+      
+      .animate-on-load.animate-slide-in-up {
+        transform: translateY(60px) scale(0.9);
+      }
+      
+      /* Active animation states */
+      .animate-fade-in-up {
+        animation: fadeInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      
+      .animate-fade-in-left {
+        animation: fadeInLeft 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      
+      .animate-fade-in-right {
+        animation: fadeInRight 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      
+      .animate-scale-in {
+        animation: scaleIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      
+      .animate-slide-in-up {
+        animation: slideInUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      
+      /* Enhanced keyframes for smoother animations */
+      @keyframes fadeInUp {
+        0% { 
+          opacity: 0; 
+          transform: translateY(40px) scale(0.95);
+        }
+        50% { 
+          opacity: 0.7; 
+          transform: translateY(20px) scale(0.98);
+        }
+        100% { 
+          opacity: 1; 
+          transform: translateY(0) scale(1);
+        }
+      }
+      
+      @keyframes fadeInLeft {
+        0% { 
+          opacity: 0; 
+          transform: translateX(-40px) scale(0.95);
+        }
+        50% { 
+          opacity: 0.7; 
+          transform: translateX(-20px) scale(0.98);
+        }
+        100% { 
+          opacity: 1; 
+          transform: translateX(0) scale(1);
+        }
+      }
+      
+      @keyframes fadeInRight {
+        0% { 
+          opacity: 0; 
+          transform: translateX(40px) scale(0.95);
+        }
+        50% { 
+          opacity: 0.7; 
+          transform: translateX(20px) scale(0.98);
+        }
+        100% { 
+          opacity: 1; 
+          transform: translateX(0) scale(1);
+        }
+      }
+      
+      @keyframes scaleIn {
+        0% { 
+          opacity: 0; 
+          transform: scale(0.7) rotate(-2deg);
+        }
+        50% { 
+          opacity: 0.8; 
+          transform: scale(0.9) rotate(-1deg);
+        }
+        100% { 
+          opacity: 1; 
+          transform: scale(1) rotate(0deg);
+        }
+      }
+      
+      @keyframes slideInUp {
+        0% { 
+          opacity: 0; 
+          transform: translateY(60px) scale(0.9);
+        }
+        50% { 
+          opacity: 0.6; 
+          transform: translateY(30px) scale(0.95);
+        }
+        100% { 
+          opacity: 1; 
+          transform: translateY(0) scale(1);
+        }
+      }
+      
+      /* Smooth transitions */
+      .transition-all {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      /* Utility classes */
+      .hidden {
+        display: none !important;
+      }
+      
+      /* Hover effects */
+      .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      }
+    </style>
+  </head>
+  <body class="bg-dk-bg text-dk-text bg-dots">
+    <!-- NAV -->
+    <header class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-dk-bg/70 border-b border-white/5 animate-on-load animate-fade-in-up">
+      <div class="mx-auto container-xl px-4 py-4 flex items-center justify-between">
+        <!-- LOGO: wordmark + underline -->
+        <a href="#top" class="group inline-block select-none" aria-label="Digital‑KI Startseite">
+          <span class="block text-white font-extrabold tracking-tight text-xl md:text-2xl leading-none">
+            Digital‑KI
+          </span>
+          <span class="block h-[4px] md:h-[5px] w-[80px] md:w-[100px] rounded-full
+                       bg-gradient-to-r from-emerald-400 to-sky-500
+                       transition-transform duration-300 group-hover:scale-x-[1.05]"></span>
+        </a>
+        <nav class="hidden md:flex items-center gap-8 text-sm text-dk-muted">
+          <a href="#vorteile" class="hover:text-white transition-all">Vorteile</a>
+          <a href="#funktioniert" class="hover:text-white transition-all">So funktioniert's</a>
+          <a href="#wirkung" class="hover:text-white transition-all">Wirtschaftliche Wirkung</a>
+          <a href="#about" class="hover:text-white transition-all">Über uns</a>
+          <a href="#kontakt" class="hover:text-white transition-all">Kontakt</a>
+        </nav>
+        <a href="#kontakt" class="hidden md:inline-flex items-center gap-2 bg-dk-brand hover:bg-dk-brandAlt text-white text-sm font-medium px-4 py-2 rounded-xl shadow-soft transition-all hover-lift">Kostenlose Beratung</a>
+        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-white/10">☰</button>
+      </div>
+      <div id="mobileNav" class="md:hidden hidden border-t border-white/10">
+        <div class="mx-auto container-xl px-4 py-3 flex flex-col gap-3 text-sm text-dk-muted">
+          <a href="#vorteile" class="hover:text-white transition-all">Vorteile</a>
+          <a href="#funktioniert" class="hover:text-white transition-all">So funktioniert's</a>
+          <a href="#wirkung" class="hover:text-white transition-all">Wirtschaftliche Wirkung</a>
+          <a href="#about" class="hover:text-white transition-all">Über uns</a>
+          <a href="#kontakt" class="hover:text-white transition-all">Kontakt</a>
+          <a href="#kontakt" class="inline-flex items-center justify-center bg-dk-brand hover:bg-dk-brandAlt text-white text-sm font-medium px-4 py-2 rounded-xl shadow-soft transition-all hover-lift">Kostenlose Beratung</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section id="top" class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-emerald-500/10 via-transparent to-transparent pointer-events-none"></div>
+      <div class="mx-auto container-xl px-4 pt-20 pb-16 md:pt-28 md:pb-24">
+        <div class="grid md:grid-cols-[1fr,1.5fr] items-start gap-10">
+          <div class="animate-on-load animate-fade-in-left">
+            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight animate-on-load animate-fade-in-left animate-delay-100">Digitaler Erinnerungsservice für <span class="text-emerald-400">Sanitätshäuser</span></h1>
+            <p class="mt-5 text-lg text-dk-muted leading-relaxed animate-on-load animate-fade-in-left animate-delay-200">Automatisieren Sie Ihre Kundenkommunikation – ganz ohne Systemwechsel. Erinnerungen per Brief, SMS oder E‑Mail, vollautomatisch und DSGVO‑konform.</p>
+            <div class="mt-7 flex flex-wrap items-center gap-3 animate-on-load animate-fade-in-left animate-delay-300">
+              <a href="#kontakt" class="inline-flex items-center gap-2 bg-dk-brand hover:bg-dk-brandAlt text-white text-base font-semibold px-5 py-3 rounded-2xl shadow-soft transition-all hover-lift">Kostenlose Beratung buchen</a>
+              <a href="#funktioniert" class="inline-flex items-center gap-2 text-dk-text/80 hover:text-white font-medium px-5 py-3 transition-all">So funktioniert's →</a>
+            </div>
+            <div class="mt-6 flex items-center gap-6 text-xs text-dk-muted animate-on-load animate-fade-in-left animate-delay-400">
+              <div class="flex items-center gap-2">✅ Kein Softwarewechsel</div>
+              <div class="flex items-center gap-2">✅ Vollautomatisch</div>
+              <div class="flex items-center gap-2">✅ DSGVO‑konform</div>
+            </div>
+          </div>
+          <div class="animate-on-load animate-fade-in-right animate-delay-200 h-full">
+            <div class="relative h-full">
+              <div class="h-full w-full rounded-3xl bg-dk-card border border-white/10 shadow-soft overflow-hidden animate-on-load animate-scale-in animate-delay-400 hover-lift transition-all">
+                <!-- Video from _version_10 folder -->
+                <video 
+                  class="w-full h-full object-cover" 
+                  autoplay 
+                  muted 
+                  loop 
+                  playsinline
+                  poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 450'%3E%3Crect width='600' height='450' fill='%230f172a'/%3E%3C/svg%3E"
+                >
+                  <source src="_version_10_202508141843.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VORTEILE -->
+    <section id="vorteile" class="py-16 md:py-24 border-t border-white/5 bg-white/5">
+      <div class="mx-auto container-xl px-4">
+        <h2 class="text-2xl md:text-3xl font-bold animate-on-load animate-fade-in-up animate-delay-100">Ihre Vorteile</h2>
+        <p class="mt-3 text-dk-muted max-w-2xl animate-on-load animate-fade-in-up animate-delay-200">Weniger Ausfälle durch Vergessen, höhere Wiederkehrquote und spürbar mehr Umsatz – ohne Mehraufwand für Ihr Team.</p>
+        <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-300 hover-lift transition-all">
+            <h3 class="font-semibold mb-2">Kein Systemwechsel</h3>
+            <p class="text-dk-muted">Wir übernehmen bestehende Kundendaten aus Ihrem System oder via CSV – ohne Prozessbruch.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-400 hover-lift transition-all">
+            <h3 class="font-semibold mb-2">Vollautomatisch</h3>
+            <p class="text-dk-muted">Das Modul erkennt selbstständig Anspruchsintervalle (z. B. Einlagen alle 6 Monate) und erinnert rechtzeitig.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-500 hover-lift transition-all">
+            <h3 class="font-semibold mb-2">Multi‑Kanal</h3>
+            <p class="text-dk-muted">Brief (Standard), optional SMS oder E‑Mail – je nach Präferenz des Patienten.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-600 hover-lift transition-all">
+            <h3 class="font-semibold mb-2">DSGVO‑konform</h3>
+            <p class="text-dk-muted">Betrieb in Deutschland/EU, zweckgebundene Datenverarbeitung, Auftragsverarbeitung auf Wunsch.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-700 hover-lift transition-all">
+            <h3 class="font-semibold mb-2">Schnelle Amortisation</h3>
+            <p class="text-dk-muted">Rendite oft innerhalb von 1–2 Monaten – durch planbare Wiederholkäufe.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-800 hover-lift transition-all">
+            <h3 class="font-semibold mb-2">Kein Mehraufwand</h3>
+            <p class="text-dk-muted">Setup durch uns, danach läuft alles im Hintergrund.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SO FUNKTIONIERT'S -->
+    <section id="funktioniert" class="py-16 md:py-24">
+      <div class="mx-auto container-xl px-4">
+        <h2 class="text-2xl md:text-3xl font-bold animate-on-load animate-fade-in-up animate-delay-100">So funktioniert's</h2>
+        <div class="mt-10 grid md:grid-cols-3 gap-6">
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-200 hover-lift transition-all">
+            <div class="text-sm text-dk-muted">Schritt 1</div>
+            <h3 class="font-semibold mt-1 mb-2">Datenübernahme</h3>
+            <p class="text-dk-muted">Import aus Ihrer CRM/ERP oder CSV. Wir passen uns Ihren Feldern an.</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-300 hover-lift transition-all">
+            <div class="text-sm text-dk-muted">Schritt 2</div>
+            <h3 class="font-semibold mt-1 mb-2">Erkennung & Terminierung</h3>
+            <p class="text-dk-muted">Automatische Ermittlung, wann ein neuer Anspruch besteht (z. B. 150 Tage nach letzter Versorgung).</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-400 hover-lift transition-all">
+            <div class="text-sm text-dk-muted">Schritt 3</div>
+            <h3 class="font-semibold mt-1 mb-2">Versand</h3>
+            <p class="text-dk-muted">Erinnerung per Brief, SMS oder E‑Mail – CI‑konform, in der passenden Sprache.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WIRKUNG -->
+    <section id="wirkung" class="py-16 md:py-24 border-y border-white/5 bg-white/5">
+      <div class="mx-auto container-xl px-4">
+        <h2 class="text-2xl md:text-3xl font-bold animate-on-load animate-fade-in-up animate-delay-100">Wirtschaftliche Wirkung</h2>
+        <p class="mt-3 text-dk-muted max-w-2xl animate-on-load animate-fade-in-up animate-delay-200">Erprobte Praxis zeigt: Digitale Erinnerungen erhöhen die Wiederkehrquote deutlich. Beispielhafte Spannweiten aus Branchenangaben.</p>
+        <div class="mt-10 grid md:grid-cols-3 gap-6">
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-300 hover-lift transition-all">
+            <div class="text-4xl font-extrabold">40–70k€</div>
+            <div class="text-dk-muted">Ø Jahresumsatz ohne Modul (Bestandskunden)</div>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-400 hover-lift transition-all">
+            <div class="text-4xl font-extrabold">+30–50k€</div>
+            <div class="text-dk-muted">Zusätzlicher Umsatz/Jahr mit Erinnerungsmodul</div>
+          </div>
+          <div class="p-6 rounded-2xl bg-dk-card border border-white/10 animate-on-load animate-slide-in-up animate-delay-500 hover-lift transition-all">
+            <div class="text-4xl font-extrabold">1–2 Mon.</div>
+            <div class="text-dk-muted">Typische Amortisationszeit</div>
+          </div>
+        </div>
+        <p class="mt-6 text-xs text-dk-muted animate-on-load animate-fade-in-up animate-delay-600">Hinweis: Werte dienen der Orientierung. Konkrete Ergebnisse variieren nach Kundenbasis, Produktmix und Region.</p>
+      </div>
+    </section>
+
+    <!-- ABOUT / ÜBER UNS -->
+    <section id="about" class="py-16 md:py-24">
+      <div class="mx-auto container-xl px-4 grid md:grid-cols-[1fr,1.5fr] gap-10 items-start">
+        <div class="overflow-hidden animate-on-load animate-fade-in-left animate-delay-200 hover-lift transition-all md:pt-8">
+          <!-- Dmitrii Shefer Photo -->
+          <img src="My photo.jpg" alt="Dmitrii Shefer" class="w-full h-full object-cover rounded-3xl" />
+        </div>
+        <div class="animate-on-load animate-fade-in-right animate-delay-300">
+          <h2 class="text-2xl md:text-3xl font-bold">Über uns</h2>
+          <p class="mt-4 text-dk-muted leading-relaxed">Digital‑KI ist ein spezialisiertes Unternehmen für Digitalisierung und KI‑gestützte Automatisierung in der Gesundheitsbranche mit Fokus auf Sanitätshäuser. Geleitet wird das Unternehmen von <span class="text-white font-semibold">Dmitrii Shefer</span>, Gründer und Hauptberater mit langjähriger Erfahrung aus internationalen Projekten.</p>
+          
+          <p class="mt-4 text-dk-muted leading-relaxed"><span class="text-white font-semibold">Dmitrii Shefer</span> war zuvor in einer verantwortlichen technischen Rolle bei <span class="text-white font-semibold">Invacare</span>, einem weltweit führenden Hersteller von Reha- und Orthopädieprodukten, tätig. <span class="text-white font-semibold">Invacare</span> ist weltweit führend in der Entwicklung von Reha- und Orthopädieprodukten, die insbesondere in Sanitätshäusern eingesetzt werden. Dort sammelte er praxisnahe Expertise in Prozessen, die direkt für den Erfolg von Sanitätshäusern entscheidend sind – von Produktzyklen über Kundenkommunikation bis hin zu regulatorischen Anforderungen.</p>
+          
+          <p class="mt-4 text-dk-muted leading-relaxed">Darüber hinaus arbeitete er an Digitalisierungs- und IT-Projekten mit <span class="text-white font-semibold">Microsoft</span>, wodurch er tiefes Know-how in modernen Softwarelösungen, Cloud-Architekturen und Automatisierung erwarb.</p>
+          
+          <p class="mt-4 text-dk-muted leading-relaxed">Die Kombination aus technischem Hintergrund, internationaler Projekterfahrung und spezifischem Branchenwissen macht Digital‑KI zu einem einzigartigen Partner für Sanitätshäuser. Unser Ziel ist es, traditionelle Einrichtungen mit minimalem Aufwand deutlich effizienter, zukunftssicher und profitabler zu machen.</p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="#kontakt" class="inline-flex items-center gap-2 bg-dk-brand hover:bg-dk-brandAlt text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-soft transition-all hover-lift">Beratung anfragen</a>
+            <a href="https://www.linkedin.com/in/dmitrii-shefer" target="_blank" class="inline-flex items-center gap-2 text-dk-text/80 hover:text-white text-sm font-medium px-4 py-2 rounded-xl border border-white/10 transition-all hover-lift">LinkedIn Profil</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KONTAKT / FORM -->
+    <section id="kontakt" class="py-16 md:py-24">
+      <div class="mx-auto container-xl px-4">
+        <div class="grid md:grid-cols-2 gap-10">
+          <div class="animate-on-load animate-fade-in-left animate-delay-200">
+            <h2 class="text-2xl md:text-3xl font-bold">Kontakt</h2>
+            <p class="mt-3 text-dk-muted">Vereinbaren Sie eine unverbindliche Erstberatung. Wir melden uns in der Regel innerhalb eines Werktags.</p>
+            <ul class="mt-6 space-y-2 text-dk-muted">
+              <li>📍 Mehrower Allee 6, 12687 Berlin</li>
+              <li>✉️ <a class="hover:text-white transition-all" href="mailto:kontakt@digital-ki.de">kontakt@digital-ki.de</a></li>
+              <li>📞 <a class="hover:text-white transition-all" href="tel:+491722504169">+49 172 250 41 69</a></li>
+            </ul>
+          </div>
+          <form id="kontaktForm" name="kontakt" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="p-6 rounded-2xl bg-dk-card border border-white/10 shadow-soft animate-on-load animate-fade-in-right animate-delay-300 hover-lift transition-all">
+            <input type="hidden" name="form-name" value="kontakt" />
+            <p class="hidden">
+              <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+            </p>
+            <div class="grid gap-4">
+              <div>
+                <label for="name" class="block text-sm mb-2">Name</label>
+                <input id="name" name="name" type="text" required class="w-full bg-transparent border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" placeholder="Ihr Name" />
+              </div>
+              <div>
+                <label for="email" class="block text-sm mb-2">E‑Mail</label>
+                <input id="email" name="email" type="email" required class="w-full bg-transparent border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" placeholder="ihre.email@beispiel.de" />
+              </div>
+              <div>
+                <label for="message" class="block text-sm mb-2">Nachricht</label>
+                <textarea id="message" name="message" rows="5" required class="w-full bg-transparent border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" placeholder="Ihre Nachricht an uns..."></textarea>
+              </div>
+              <button type="submit" class="mt-2 inline-flex items-center justify-center bg-dk-brand hover:bg-dk-brandAlt text-white font-semibold px-4 py-2 rounded-xl transition-all hover-lift disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="submit-text">Senden</span>
+                <span class="loading-text hidden">Wird gesendet...</span>
+              </button>
+            </div>
+          </form>
+          
+          <!-- Success message (initially hidden) -->
+          <div id="successMessage" class="hidden p-6 rounded-2xl bg-dk-card border border-white/10 shadow-soft animate-on-load animate-fade-in-right animate-delay-300 hover-lift transition-all">
+            <div class="text-center">
+              <div class="text-4xl mb-4">✅</div>
+              <h3 class="text-xl font-semibold mb-2">Vielen Dank für Ihre Nachricht!</h3>
+              <p class="text-dk-muted">Wir werden uns so schnell wie möglich bei Ihnen melden. In der Regel erhalten Sie innerhalb eines Werktags eine Antwort.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER with Legal -->
+    <footer class="py-10 border-t border-white/5 bg-white/5">
+      <div class="mx-auto container-xl px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 animate-on-load animate-fade-in-up animate-delay-400">
+        <div>
+          <div class="text-lg font-semibold">Digital‑KI</div>
+          <div class="text-sm text-dk-muted">Digitalisierung & KI‑Automatisierung für Sanitätshäuser</div>
+        </div>
+        <div class="flex gap-6 text-sm">
+          <a href="#impressum" class="hover:text-white transition-all">Impressum</a>
+          <a href="#datenschutz" class="hover:text-white transition-all">Datenschutz</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- LEGAL SECTIONS -->
+    <section id="impressum" class="py-16 md:py-24">
+      <div class="mx-auto container-xl px-4 max-w-3xl">
+        <h2 class="text-2xl md:text-3xl font-bold animate-on-load animate-fade-in-up animate-delay-100">Impressum</h2>
+        <div class="mt-6 space-y-2 text-dk-muted animate-on-load animate-fade-in-up animate-delay-200">
+          <p><strong>Angaben gemäß § 5 TMG</strong></p>
+          <p>Dmitrii Shefer<br>Mehrower Allee 6<br>12687 Berlin<br>Deutschland</p>
+          <p><strong>Kontakt</strong><br>E‑Mail: kontakt@digital-ki.de<br>Telefon: +49 172 250 41 69</p>
+          <p><strong>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</strong><br>Dmitrii Shefer, Anschrift wie oben</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="datenschutz" class="py-16 md:py-24 border-t border-white/5">
+      <div class="mx-auto container-xl px-4 max-w-3xl">
+        <h2 class="text-2xl md:text-3xl font-bold animate-on-load animate-fade-in-up animate-delay-100">Datenschutzerklärung</h2>
+        <div class="mt-6 space-y-4 text-dk-muted leading-relaxed animate-on-load animate-fade-in-up animate-delay-200">
+          <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Diese Website verarbeitet personenbezogene Daten ausschließlich im notwendigen Umfang. Rechtsgrundlagen sind Art. 6 Abs. 1 lit. a–f DSGVO.</p>
+          <p><strong>Kontaktformular:</strong> Angaben werden zweckgebunden zur Bearbeitung der Anfrage verwendet und nicht ohne Einwilligung an Dritte weitergegeben.</p>
+          <p><strong>Hosting & Logfiles:</strong> Beim Aufruf der Seiten werden automatisch Server‑Logfiles erhoben (IP‑Adresse, Datum/Uhrzeit, User‑Agent) – zur Sicherstellung des Betriebs; Speicherdauer max. 7–14 Tage.</p>
+          <p><strong>Cookies/Tracking:</strong> Standardmäßig setzen wir keine nicht notwendigen Cookies. Analytics kann optional DSGVO‑konform integriert werden (z. B. Plausible, IP‑anonymisiert).</p>
+          <p>Weitere Details erstellen wir gern individuell mit einem Generator (z. B. e‑Recht24). Für eine vollständige und verbindliche Fassung bitte einen rechtlichen Generator oder Beratung nutzen.</p>
+        </div>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>

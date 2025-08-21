@@ -1,0 +1,4 @@
+# Netlify Forms redirects
+/success /?success=true 200
+
+
